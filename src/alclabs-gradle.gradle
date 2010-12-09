@@ -1,0 +1,151 @@
+import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
+import org.gradle.api.artifacts.PublishArtifact
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.internal.artifacts.dsl.dependencies.ModuleDependencyFactory
+import org.gradle.api.internal.AsmBackedClassGenerator
+import groovy.swing.SwingBuilder
+import javax.swing.*
+import java.awt.Dimension
+import groovy.beans.Bindable
+import java.util.regex.Pattern
+import java.util.Properties
+
+defaultTasks 'showGui'
+
+// these values are inserted into the manifest.  They can be customized
+// by each sample as necessary
+createdBy = 'ALC Labs'
+group = 'com.alclabs'
+
+apply plugin: 'war'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+repositories {
+   mavenCentral()
+}
+
+war {
+   // lower-case'ify the war name to simplify usage in a web browser (which is case-sensitive)
+   baseName = war.baseName.toLowerCase()
+
+   // adjust the manifest.  Use a doFirst so that any subprojects that want to
+   // override these properties can do so.
+   doFirst {
+      manifest.attributes('Created-By': createdBy, 'Manifest-Version': version)
+   }
+
+   // include license in binary
+   from 'LICENSE.txt'
+}
+
+// not intended to be used directly.  This is the default task for the script.  This allows
+// the user to "double-click" on 'gradlew' and have the GUI launch.
+task showGui(description: 'Starts a graphical user interface for the build') << {
+   org.gradle.gradleplugin.userinterface.swing.standalone.BlockingApplication.launchAndBlock();
+}
+
+// Helper method to get the installation root directory of the server.  This method will either
+// return whatever is in the 'serverRootDir' property (if it's set) ...
+File getServerDir() {
+   if (!hasProperty('serverRootDir')) {
+      serverRootDir = null
+      Properties props = new Properties()
+      File optionsFile = new File('build.options')
+      if (optionsFile.exists()) {
+         optionsFile.withReader { props.load(it) }
+         serverRootDir = props.getProperty('serverRootDir')
+      }
+
+      if (serverRootDir == null) {
+         File dir = pickServerDir()
+         if (dir == null)
+            throw new Exception("""serverRootDir property (path to webctrl install directory) not set.
+Please set the serverRootDir property on the command line (-PserverRootDir=<dir>) or in the userHome/.gradle/gradle.properties file.""")
+
+         serverRootDir = dir.absolutePath.replaceAll('\\\\', '/')
+         props.setProperty('serverRootDir', serverRootDir)
+         optionsFile.withWriter { props.store(it, null) }
+      }
+   }
+   return new File(serverRootDir)
+}
+
+// Helper methods to get the directory in which to deploy webapps (add-ons).
+File getDeployLoc() { new File(getServerDir(), 'webserver/webapps/'+war.baseName) }
+
+// task that deletes the .war (and exploded dir) from the webserver
+task cleanDeploy(description: 'Deletes the war from the webserver', overwrite: true, type:Delete)
+cleanDeploy.doFirst { delete getDeployLoc() }
+
+// task that builds and deploys the .war to the webserver
+task deploy(description: 'Deploys the war to the webserver', type: Sync, dependsOn:war)
+deploy.doFirst {
+   println "Deploying $war.baseName to ${getDeployLoc().canonicalPath}"
+   from zipTree(war.archivePath)
+   into getDeployLoc()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '0.9-rc-2'
+    jarPath = 'wrapper'
+    archiveBase = Wrapper.PathBase.GRADLE_USER_HOME
+}
+
+File pickServerDir() {
+  def serverDir = null;
+  def builder = new SwingBuilder()
+  builder.registerBeanFactory('folderChooser', com.jidesoft.swing.FolderChooser)
+  builder.build {
+    frame(id: 'mainframe', title:'Pick Server Root Dir', defaultCloseOperation:JFrame.EXIT_ON_CLOSE, size:[440,440], locationRelativeTo: null, show: true) {
+      panel(border: emptyBorder(10)) {
+        boxLayout axis: BoxLayout.Y_AXIS
+        panel {
+          boxLayout axis: BoxLayout.X_AXIS
+           label text: '<html>In order to deploy the add-on to the server (and to run some tests), the build needs to know where the root directory of the server is located.</html>'
+        }
+        rigidArea size: new Dimension(0, 10)
+        panel {
+          boxLayout axis: BoxLayout.Y_AXIS
+           panel {
+             boxLayout axis: BoxLayout.X_AXIS
+             label text: 'Server root dir:'
+             hglue()
+           }
+          rigidArea size: new Dimension(0, 5)
+           panel {
+             boxLayout axis: BoxLayout.X_AXIS
+             folderChooser id: 'driverDirChooser', currentDirectory: new File('.'), navigationFieldVisible: false, controlButtonsAreShown: false, availableButtons: 0, recentListVisible: false
+             hglue()
+           }
+        }
+        rigidArea size: new Dimension(0, 10)
+        panel {
+          boxLayout axis: BoxLayout.X_AXIS
+          hglue()
+           button text: 'Accept', actionPerformed: {
+             serverDir = builder.driverDirChooser.selectedFolder
+             dispose()
+           }
+           hglue()
+           button text: 'Cancel', actionPerformed: {
+             dispose()
+           }
+          hglue()
+        }
+      }
+    }
+  }
+  // block until the gui is closed
+  while (builder.mainframe.isVisible()) {
+    Thread.sleep(100)
+  }
+  return serverDir
+}
+
+buildscript {
+    repositories { mavenRepo urls: 'http://download.java.net/maven/2/' }
+    dependencies { classpath group: 'com.jidesoft', name: 'jide-oss', version: '2.9.0' }
+}
