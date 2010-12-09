@@ -13,7 +13,6 @@ public class SingleFileArchive extends AbstractArchiveTask {
         resolver = getServices().get(FileResolver.class);
         //action = new FileCopyAction(resolver);
         action = new FileCopyActionImpl(getServices().get(FileResolver.class), new FileCopySpecVisitor());
-        System.err.println("In SingleFileArchive Constructor");
     }
 
     @Override
@@ -23,14 +22,6 @@ public class SingleFileArchive extends AbstractArchiveTask {
         return this;
     }
 
-    /*
-    @Override
-    public File getArchivePath() {
-        File result = super.getArchivePath();
-        System.out.println("Outer getArchivePath returned:"+result.getPath());
-        return result;    //To change body of overridden methods use File | Settings | File Templates.
-    }
-    */
 
     @Override
     protected CopyActionImpl getCopyAction() {
