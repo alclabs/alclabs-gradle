@@ -29,7 +29,7 @@ repositories {
 
 war {
    // lower-case'ify the war name to simplify usage in a web browser (which is case-sensitive)
-   baseName = war.baseName.toLowerCase()
+   archiveName = war.baseName.toLowerCase() + '.war'
 
    // adjust the manifest.  Use a doFirst so that any subprojects that want to
    // override these properties can do so.
@@ -38,7 +38,9 @@ war {
    }
 
    // include license in binary
-   from 'LICENSE.txt'
+   from('LICENSE.txt') {
+       into 'WEB-INF'
+   }
 }
 
 // not intended to be used directly.  This is the default task for the script.  This allows
