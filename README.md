@@ -11,15 +11,15 @@ To use this, include the following in the header of your gradle build file.
 	apply from: configurations.gradleScript.resolve().iterator().next()
 
 This shared gradle file includes:
-* plugin war
-* plugin groovy (which includes java)
-* plugin idea
-* plugin eclipse
-* sets up maven central as a repo
-* configures the war task to use an all lower case name without a version in the war name
-* wrapper task to generate a gradle wrapper
-* deploy task to deploy an exploded war to your WebCTRL webapp directory
-* gradle GUI launcher
+*   plugin war
+*   plugin groovy (which includes java)
+*   plugin idea
+*   plugin eclipse
+*   sets up maven central as a repo
+*   configures the war task to use an all lower case name without a version in the war name
+*   wrapper task to generate a gradle wrapper
+*   deploy task to deploy an exploded war to your WebCTRL webapp directory
+*   gradle GUI launcher
 
 If you run gradlew for a project using this shared file without any parameters, it will launch the gradle gui.
 
