@@ -2,7 +2,7 @@ apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'base'
 
-version = "1.0.0"
+version = "1.0.1"
 group = "com.alcshare"
 
 repositories {
@@ -18,7 +18,7 @@ dependencies {
 uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
-        repository(url: 'dav:https://repo.alcshare.com:2078/./')
+        repository(url: "dav:https://$alcshare_repo/./")
               {
            authentication(userName: "$addon_publish_user", password: "$addon_publish_password")
         }

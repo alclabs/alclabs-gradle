@@ -89,7 +89,7 @@ deploy.doFirst {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '0.9-rc-2'
+    gradleVersion = '0.9-rc-3'
     jarPath = 'wrapper'
     archiveBase = Wrapper.PathBase.GRADLE_USER_HOME
 }
