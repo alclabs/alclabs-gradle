@@ -7,3 +7,5 @@ build/
 gradle-app.setting
 .gradle/
 buildSrc/.gradle/
+buildSrc/build/
+
