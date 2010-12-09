@@ -11,6 +11,7 @@ To use this, include the following in the header of your gradle build file.
 	apply from: configurations.gradleScript.resolve().iterator().next()
 
 This shared gradle file includes:
+
 *   plugin war
 *   plugin groovy (which includes java)
 *   plugin idea
