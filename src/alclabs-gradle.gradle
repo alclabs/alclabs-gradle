@@ -76,7 +76,7 @@ Please set the serverRootDir property on the command line (-PserverRootDir=<dir>
 }
 
 // Helper methods to get the directory in which to deploy webapps (add-ons).
-File getDeployLoc() { new File(getServerDir(), 'webserver/webapps/'+war.baseName) }
+File getDeployLoc() { new File(getServerDir(), 'webserver/webapps/'+war.baseName.toLowerCase()) }
 
 // task that deletes the .war (and exploded dir) from the webserver
 task cleanDeploy(description: 'Deletes the war from the webserver', overwrite: true, type:Delete)
@@ -145,6 +145,10 @@ File pickServerDir() {
     Thread.sleep(100)
   }
   return serverDir
+}
+
+ideaProject {
+    javaVersion = '1.6'
 }
 
 buildscript {
