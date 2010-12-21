@@ -91,8 +91,9 @@ deploy.doFirst {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '0.9-rc-3'
-    jarPath = 'wrapper'
+    gradleVersion = '0.9'
+    urlRoot = 'http://gradle.artifactoryonline.com/gradle/distributions' 
+    jarFile = file('wrapper/gradle-wrapper.jar')
     archiveBase = Wrapper.PathBase.GRADLE_USER_HOME
 }
 
