@@ -90,9 +90,14 @@ deploy.doFirst {
    into getDeployLoc()
 }
 
+// have build tell you where the archive was put!
+build.doLast {
+   println "War created as ${war.archivePath}"
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '0.9'
-    urlRoot = 'http://gradle.artifactoryonline.com/gradle/distributions' 
+    urlRoot = 'http://gradle.artifactoryonline.com/gradle/distributions'
     jarFile = file('wrapper/gradle-wrapper.jar')
     archiveBase = Wrapper.PathBase.GRADLE_USER_HOME
 }
