@@ -1,0 +1,6 @@
+-------------------------------------------------------------------------------
+cglib-nodep package
+-------------------------------------------------------------------------------
+Website: http://cglib.sourceforge.net
+License: Apache version 2.0 - http://www.apache.org/licenses/LICENSE-2.0.html
+

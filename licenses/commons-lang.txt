@@ -1,0 +1,6 @@
+-------------------------------------------------------------------------------
+commons-lang package
+-------------------------------------------------------------------------------
+Website: http://commons.apache.org/lang/
+License: Apache version 2.0 - http://www.apache.org/licenses/LICENSE-2.0.html
+
