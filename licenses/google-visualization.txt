@@ -1,0 +1,6 @@
+-------------------------------------------------------------------------------
+google visualization service
+-------------------------------------------------------------------------------
+Website: http://code.google.com/apis/visualization/interactive_charts.html
+License: http://code.google.com/apis/visualization/terms.html
+

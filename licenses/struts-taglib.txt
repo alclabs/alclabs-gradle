@@ -1,0 +1,6 @@
+-------------------------------------------------------------------------------
+struts-taglib package
+-------------------------------------------------------------------------------
+Website: http://struts.apache.org/
+License: Apache version 2.0 - http://www.apache.org/licenses/LICENSE-2.0.html
+
