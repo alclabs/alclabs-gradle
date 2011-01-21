@@ -11,19 +11,20 @@ repositories {
 
 configurations { deployerJars }
 dependencies {
-   deployerJars "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-4"
+   deployerJars "org.apache.maven.wagon:wagon-ftp:1.0-beta-4"
+//   deployerJars "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-4"
 }
 
 
 uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
-        repository(url: "dav:https://$alcshare_repo/./")
+        //repository(url: "dav:https://$alcshare_repo/./")
+        repository(url: 'ftp://alcshare.com')
               {
            authentication(userName: "$addon_publish_user", password: "$addon_publish_password")
         }
         
-    //        repository(url: "file://build/myRepo/")
         //repository(url: new File('build/repo').toURI().toURL())
     }
 }
