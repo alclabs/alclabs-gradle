@@ -83,11 +83,12 @@ task cleanDeploy(description: 'Deletes the war from the webserver', overwrite: t
 cleanDeploy.doFirst { delete getDeployLoc() }
 
 // task that builds and deploys the .war to the webserver
-task deploy(description: 'Deploys the war to the webserver', type: Sync, dependsOn:war)
-deploy.doFirst {
-   println "Deploying $war.baseName to ${getDeployLoc().canonicalPath}"
+task deploy(description: 'Deploys the war to the webserver', type: Sync, dependsOn:war) {
+   doFirst {
+      println "Deploying $war.baseName to ${getDeployLoc().canonicalPath}"
+   }
    from zipTree(war.archivePath)
-   into getDeployLoc()
+   into { getDeployLoc() }
 }
 
 // have build tell you where the archive was put!
@@ -96,8 +97,7 @@ build.doLast {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '0.9'
-    urlRoot = 'http://gradle.artifactoryonline.com/gradle/distributions'
+    gradleVersion = '1.0-milestone-2'
     jarFile = file('wrapper/gradle-wrapper.jar')
     archiveBase = Wrapper.PathBase.GRADLE_USER_HOME
 }
