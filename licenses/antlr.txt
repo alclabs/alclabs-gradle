@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+antlr package
+-------------------------------------------------------------------------------
+Copyright (c) 2010 Terence Parr
+Website: http://commons.apache.org/io/
+License: BSD - http://www.antlr.org/license.html
+
+

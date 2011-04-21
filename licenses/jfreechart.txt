@@ -1,0 +1,6 @@
+-------------------------------------------------------------------------------
+jfreechart package
+-------------------------------------------------------------------------------
+Website: http://www.jfree.org/jfreechart/
+License: LGPL version 2.1 - http://www.gnu.org/licenses/lgpl-2.1.html
+
