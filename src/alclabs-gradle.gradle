@@ -97,7 +97,7 @@ build.doLast {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.0-milestone-2'
+    gradleVersion = '1.0-milestone-3'
     jarFile = file('wrapper/gradle-wrapper.jar')
     archiveBase = Wrapper.PathBase.GRADLE_USER_HOME
 }
