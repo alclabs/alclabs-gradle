@@ -27,14 +27,33 @@ repositories {
    mavenCentral()
 }
 
+task generateAddOnInfo << {
+   def props = project.convention.plugins.addoninfo.properties
+   if (props.any { key, value -> value != null }) {
+      def text = '<addon version="1">\r\n'
+      props.each { key, value ->
+        if (value) text += "  <$key>$value</$key>\r\n"
+      }
+      text += '</addon>'
+
+      outputFile.parentFile.mkdirs()
+      outputFile.text = text
+   }
+   else
+      outputFile.delete()
+}
+generateAddOnInfo.outputFile = new File(buildDir, 'tmp/war/META-INF/addon-info.xml')
+
 war {
+   dependsOn generateAddOnInfo
+   inputs.files generateAddOnInfo.outputFile, 'LICENSE.txt'
+
    // lower-case'ify the war name to simplify usage in a web browser (which is case-sensitive)
    archiveName = war.baseName.toLowerCase() + '.war'
 
-   // adjust the manifest.  Use a doFirst so that any subprojects that want to
-   // override these properties can do so.
-   doFirst {
-      manifest.attributes('Created-By': createdBy, 'Manifest-Version': version)
+   // include addon-info.xml in binary
+   from(generateAddOnInfo.outputFile) {
+       into 'META-INF'
    }
 
    // include license in binary
@@ -161,3 +180,22 @@ buildscript {
     repositories { mavenRepo urls: 'http://download.java.net/maven/2/' }
     dependencies { classpath group: 'com.jidesoft', name: 'jide-oss', version: '2.9.0' }
 }
+
+// Support for addon-info.xml
+class AddOnInfo {
+   def String name
+   def String description
+   def String version
+   def String vendor
+
+   void info(Closure c) {
+      c.setDelegate(this)
+      c.setResolveStrategy Closure.DELEGATE_ONLY
+      c()
+   }
+   Map getProperties() {
+      [ name:name, description:description, version:version, vendor:vendor ]
+   }
+}
+
+project.convention.plugins.addoninfo = new AddOnInfo()
