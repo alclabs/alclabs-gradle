@@ -13,11 +13,6 @@ import java.util.Properties
 
 defaultTasks 'showGui'
 
-// these values are inserted into the manifest.  They can be customized
-// by each sample as necessary
-createdBy = 'ALC Labs'
-group = 'com.alclabs'
-
 apply plugin: 'war'
 apply plugin: 'groovy'
 apply plugin: 'idea'
@@ -172,12 +167,16 @@ File pickServerDir() {
   return serverDir
 }
 
-ideaProject {
-    javaVersion = '1.6'
+idea {
+  project {
+    //if you want to set specific jdk and language level
+    jdkName = '1.6'
+    languageLevel = '1.6'
+  }
 }
 
 buildscript {
-    repositories { mavenRepo urls: 'http://download.java.net/maven/2/' }
+    repositories { mavenRepo url: 'http://download.java.net/maven/2/' }
     dependencies { classpath group: 'com.jidesoft', name: 'jide-oss', version: '2.9.0' }
 }
 
