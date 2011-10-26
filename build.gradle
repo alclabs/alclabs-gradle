@@ -2,7 +2,7 @@ apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'base'
 
-version = "1.0.6"
+version = "1.0.7"
 group = "com.alcshare"
 
 repositories {

@@ -22,22 +22,30 @@ repositories {
    mavenCentral()
 }
 
-task generateAddOnInfo << {
-   def props = project.convention.plugins.addoninfo.properties
-   if (props.any { key, value -> value != null }) {
-      def text = '<addon version="1">\r\n'
-      props.each { key, value ->
-        if (value) text += "  <$key>$value</$key>\r\n"
-      }
-      text += '</addon>'
+project.convention.plugins.addoninfo = new AddOnInfo()
 
-      outputFile.parentFile.mkdirs()
-      outputFile.text = text
+task generateAddOnInfo {
+   outputFile = new File(buildDir, 'tmp/war/META-INF/addon-info.xml')
+   afterEvaluate {
+      inputs.properties project.convention.plugins.addoninfo.properties
+      outputs.file outputFile
    }
-   else
-      outputFile.delete()
+   doLast {
+      def props = project.convention.plugins.addoninfo.properties
+      if (props.any { key, value -> value != null }) {
+         def text = '<addon version="1">\r\n'
+         props.each { key, value ->
+           if (value) text += "  <$key>$value</$key>\r\n"
+         }
+         text += '</addon>'
+
+         outputFile.parentFile.mkdirs()
+         outputFile.text = text
+      }
+      else
+         outputFile.delete()
+   }
 }
-generateAddOnInfo.outputFile = new File(buildDir, 'tmp/war/META-INF/addon-info.xml')
 
 war {
    dependsOn generateAddOnInfo
@@ -197,4 +205,3 @@ class AddOnInfo {
    }
 }
 
-project.convention.plugins.addoninfo = new AddOnInfo()
