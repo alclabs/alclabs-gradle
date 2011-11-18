@@ -181,6 +181,10 @@ idea {
     jdkName = '1.6'
     languageLevel = '1.6'
   }
+  module {
+    scopes.PROVIDED.plus += configurations.providedCompile
+    scopes.PROVIDED.plus += configurations.providedRuntime
+  }
 }
 
 buildscript {
