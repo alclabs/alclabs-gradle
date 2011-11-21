@@ -1,8 +1,6 @@
 apply plugin: 'maven'
-apply plugin: 'idea'
-apply plugin: 'base'
 
-version = "1.0.9"
+version = "1.10"
 group = "com.alcshare"
 
 repositories {
@@ -11,43 +9,20 @@ repositories {
 
 configurations { deployerJars }
 dependencies {
-   deployerJars "org.apache.maven.wagon:wagon-ftp:1.0-beta-4"
-//   deployerJars "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-4"
+   deployerJars "org.apache.maven.wagon:wagon-ftp:2.0"
 }
 
 
 uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
-        //repository(url: "dav:https://$alcshare_repo/./")
-        repository(url: 'ftp://alcshare.com')
-              {
+        //repository(url: new File('build/repo').toURI().toURL()) // for testing out deployer changes
+        repository(url: 'ftp://alcshare.com') {
            authentication(userName: "$addon_publish_user", password: "$addon_publish_password")
         }
-
-        //repository(url: new File('build/repo').toURI().toURL())
     }
 }
 
-// SingleFileArchive
-task makeit(type: SingleFileArchive) {
-    from 'src'
-    include '**/'
-    into 'build/distributions'
-    baseName = "alclabs-gradle"
-    extension = "gradle"
-    version = null
-}
-
 artifacts {
-   archives makeit
-}
-
-uploadArchives.dependsOn makeit
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '0.9-rc-3'
-    distributionUrl = 'http://gradle.artifactoryonline.com/gradle/distributions'
-    jarFile = file('wrapper/gradle-wrapper.jar')
-    archiveBase = Wrapper.PathBase.GRADLE_USER_HOME
+   archives file('src/alclabs-gradle.gradle')
 }

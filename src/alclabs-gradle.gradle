@@ -1,14 +1,5 @@
-import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
-import org.gradle.api.artifacts.PublishArtifact
-import org.gradle.api.artifacts.Dependency
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.internal.artifacts.dsl.dependencies.ModuleDependencyFactory
-import org.gradle.api.internal.AsmBackedClassGenerator
-import groovy.swing.SwingBuilder
 import javax.swing.*
 import java.awt.Dimension
-import groovy.beans.Bindable
-import java.util.regex.Pattern
 import java.util.Properties
 
 defaultTasks 'showGui'
@@ -126,7 +117,7 @@ task wrapper(type: Wrapper) {
 
 File pickServerDir() {
   def serverDir = null;
-  def builder = new SwingBuilder()
+  def builder = new groovy.swing.SwingBuilder()
   builder.registerBeanFactory('folderChooser', com.jidesoft.swing.FolderChooser)
   builder.build {
     frame(id: 'mainframe', title:'Pick Server Root Dir', defaultCloseOperation:JFrame.EXIT_ON_CLOSE, size:[440,440], locationRelativeTo: null, show: true) {
@@ -172,6 +163,8 @@ File pickServerDir() {
   while (builder.mainframe.isVisible()) {
     Thread.sleep(100)
   }
+  if (serverDir == null)
+    throw new GradleException("ERROR: Build cannot continue because the root directory of the server was not specified")
   return serverDir
 }
 
