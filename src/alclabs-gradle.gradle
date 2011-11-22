@@ -11,6 +11,19 @@ apply plugin: 'eclipse'
 
 repositories {
    mavenCentral()
+
+   // since JQuery is frequently used by add-ons, include their repo here as a convenience
+   mavenRepo (name: "JQuery", url: "http://code.jquery.com") {
+        pattern = "[module]-[revision](.[classifier]).[ext]"
+   }
+   mavenRepo (name: "JQuery UI", url: "http://code.jquery.com/ui") {
+        pattern = "[revision]/[module](.[classifier]).[ext]"
+   }
+}
+
+jsDir = 'js'
+configurations {
+   js // used to specify javascript dependencies.  These are all put in 'jsDir' when the .war is built.
 }
 
 project.convention.plugins.addoninfo = new AddOnInfo()
@@ -53,6 +66,11 @@ war {
    // include license in binary
    from('LICENSE.txt') {
        into 'WEB-INF'
+   }
+
+   // include javascript libraries
+   from(configurations.js) {
+       into jsDir
    }
 }
 
@@ -211,6 +229,17 @@ idea {
             dep.classes.each {
               libNode.appendNode('element', [id: 'file-copy', path: pathFactory.relativePath(userHome, '$USER_HOME$', it.file).relPath])
             }
+        }
+      }
+      def jsLibs = modules[0].project.configurations.js.resolve()
+      if (!jsLibs.isEmpty())
+      {
+        def jsNode =  mgrNode.artifact.root.element.find { it.'@name' == jsDir }
+        if (!jsNode)
+          jsNode =  mgrNode.artifact.root[0].appendNode('element', [id: 'directory', name: jsDir])
+
+        jsLibs.each {
+          jsNode.appendNode('element', [id: 'file-copy', path: pathFactory.relativePath(userHome, '$USER_HOME$', it).relPath])
         }
       }
     }
