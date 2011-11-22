@@ -251,6 +251,10 @@ idea {
     scopes.COMPILE.minus += configurations.providedCompile
     scopes.RUNTIME.minus += configurations.providedRuntime
 
+    inheritOutputDirs = false
+    outputDir = file("$buildDir/classes/main")
+    testOutputDir = file("$buildDir/classes/test")
+
     iml.withXml {
       def node = it.asNode()
 
