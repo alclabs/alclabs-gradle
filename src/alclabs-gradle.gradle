@@ -188,10 +188,9 @@ idea {
       if (webNode)
         mgrNode.remove(webNode)
 
-      def webModule = modules[0]
       mgrNode.append(new XmlParser().parseText("""
         <artifact type="exploded-war" build-on-make="true" name="Add-On Web exploded">
-          <output-path>${webModule.pathFactory.relativePath('MODULE_DIR', getDeployLoc()).relPath}</output-path>
+          <output-path>${pathFactory.relativePath('PROJECT_DIR', getDeployLoc()).relPath}</output-path>
           <root id="root">
             <element id="javaee-facet-resources" facet="Weather/web/Add-On Web" />
             <element id="directory" name="WEB-INF">
@@ -205,12 +204,12 @@ idea {
       """))
       def libNode = mgrNode.artifact.root.element.find { it.'@name' == 'WEB-INF' }.element.find { it.'@name' == 'lib' }
       def userHome = new File(System.getProperty("user.home"))
-      webModule.resolveDependencies().each { dep ->
+      modules[0].resolveDependencies().each { dep ->
         if (dep instanceof org.gradle.plugins.ide.idea.model.ModuleLibrary)
         {
           if (dep.scope == 'COMPILE' || dep.scope == 'RUNTIME')
             dep.classes.each {
-              libNode.appendNode('element', [id: 'file-copy', path: webModule.pathFactory.relativePath(userHome, '$USER_HOME$', it.file).relPath])
+              libNode.appendNode('element', [id: 'file-copy', path: pathFactory.relativePath(userHome, '$USER_HOME$', it.file).relPath])
             }
         }
       }
