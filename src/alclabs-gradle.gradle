@@ -1,6 +1,5 @@
 import javax.swing.*
 import java.awt.Dimension
-import java.util.Properties
 
 defaultTasks 'showGui'
 
@@ -35,11 +34,15 @@ task generateAddOnInfo {
       outputs.file outputFile
    }
    doLast {
-      def props = project.convention.plugins.addoninfo.properties
+      def addoninfo = project.convention.plugins.addoninfo
+      def props = addoninfo.properties
       if (props.any { key, value -> value != null }) {
          def text = '<addon version="1">\r\n'
          props.each { key, value ->
-           if (value) text += "  <$key>$value</$key>\r\n"
+           if (value) {
+               def keyText = addoninfo.propNameToXmlElementName(key)
+               text += "  <$keyText>$value</$keyText>\r\n"
+           }
          }
          text += '</addon>'
 
@@ -296,14 +299,22 @@ class AddOnInfo {
    def String description
    def String version
    def String vendor
+   def String systemMenuProvider
 
    void info(Closure c) {
       c.setDelegate(this)
       c.setResolveStrategy Closure.DELEGATE_ONLY
       c()
    }
+
+   String propNameToXmlElementName(String propName)
+   {
+       // this converts a camelCase string to dash-separated all lower case string (i.e. camel-case)
+       propName.replaceAll('[A-Z]', { '-'+it.toLowerCase() })
+   }
+
    Map getProperties() {
-      [ name:name, description:description, version:version, vendor:vendor ]
+      [ name:name, description:description, version:version, vendor:vendor, systemMenuProvider:systemMenuProvider ]
    }
 }
 
