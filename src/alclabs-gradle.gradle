@@ -192,8 +192,11 @@ File pickServerDir() {
 idea {
   project {
     //if you want to set specific jdk and language level
-    jdkName = '1.6'
-    languageLevel = '1.6'
+    rootProject.afterEvaluate {
+       println "jdk = ${rootProject.sourceCompatibility}"
+       jdkName = "${rootProject.sourceCompatibility}"
+       languageLevel = "${rootProject.sourceCompatibility}"
+    }
 
     ipr.withXml {
       def node = it.asNode()
@@ -213,10 +216,10 @@ idea {
         <artifact type="exploded-war" build-on-make="true" name="Add-On Web exploded">
           <output-path>${pathFactory.relativePath('PROJECT_DIR', getDeployLoc()).relPath}</output-path>
           <root id="root">
-            <element id="javaee-facet-resources" facet="Weather/web/Add-On Web" />
+            <element id="javaee-facet-resources" facet="${war.baseName}/web/Add-On Web" />
             <element id="directory" name="WEB-INF">
               <element id="directory" name="classes">
-                <element id="module-output" name="Weather" />
+                <element id="module-output" name="${war.baseName.toLowerCase()}" />
               </element>
               <element id="directory" name="lib" />
             </element>
