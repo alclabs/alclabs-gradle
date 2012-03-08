@@ -193,7 +193,6 @@ idea {
   project {
     //if you want to set specific jdk and language level
     rootProject.afterEvaluate {
-       println "jdk = ${rootProject.sourceCompatibility}"
        jdkName = "${rootProject.sourceCompatibility}"
        languageLevel = "${rootProject.sourceCompatibility}"
     }
