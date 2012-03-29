@@ -20,18 +20,18 @@ repositories {
    }
 }
 
-jsDir = 'js'
+final jsDir = 'js'
 configurations {
    js // used to specify javascript dependencies.  These are all put in 'jsDir' when the .war is built.
 }
 
 project.convention.plugins.addoninfo = new AddOnInfo()
 
+final addonInfoFile = new File(buildDir, 'tmp/war/META-INF/addon-info.xml')
 task generateAddOnInfo {
-   outputFile = new File(buildDir, 'tmp/war/META-INF/addon-info.xml')
    afterEvaluate {
       inputs.properties project.convention.plugins.addoninfo.properties
-      outputs.file outputFile
+      outputs.file addonInfoFile
    }
    doLast {
       def addoninfo = project.convention.plugins.addoninfo
@@ -46,23 +46,23 @@ task generateAddOnInfo {
          }
          text += '</addon>'
 
-         outputFile.parentFile.mkdirs()
-         outputFile.text = text
+         addonInfoFile.parentFile.mkdirs()
+         addonInfoFile.text = text
       }
       else
-         outputFile.delete()
+         addonInfoFile.delete()
    }
 }
 
 war {
    dependsOn generateAddOnInfo
-   inputs.files generateAddOnInfo.outputFile, 'LICENSE.txt'
+   inputs.files addonInfoFile, 'LICENSE.txt'
 
    // lower-case'ify the war name to simplify usage in a web browser (which is case-sensitive)
    archiveName = war.baseName.toLowerCase() + '.war'
 
    // include addon-info.xml in binary
-   from(generateAddOnInfo.outputFile) {
+   from(addonInfoFile) {
        into 'META-INF'
    }
 
@@ -86,13 +86,12 @@ task showGui(description: 'Starts a graphical user interface for the build') << 
 // Helper method to get the installation root directory of the server.  This method will either
 // return whatever is in the 'serverRootDir' property (if it's set) ...
 File getServerDir() {
-   if (!hasProperty('serverRootDir')) {
-      serverRootDir = null
+   if (!project.ext.properties.containsKey("serverRootDir") || project.ext.serverRootDir == null) {
       Properties props = new Properties()
       File optionsFile = new File('build.options')
       if (optionsFile.exists()) {
          optionsFile.withReader { props.load(it) }
-         serverRootDir = props.getProperty('serverRootDir')
+         project.ext.serverRootDir = props.getProperty('serverRootDir')
       }
 
       if (serverRootDir == null) {
@@ -101,12 +100,12 @@ File getServerDir() {
             throw new Exception("""serverRootDir property (path to webctrl install directory) not set.
 Please set the serverRootDir property on the command line (-PserverRootDir=<dir>) or in the userHome/.gradle/gradle.properties file.""")
 
-         serverRootDir = dir.absolutePath.replaceAll('\\\\', '/')
+         project.ext.serverRootDir = dir.absolutePath.replaceAll('\\\\', '/')
          props.setProperty('serverRootDir', serverRootDir)
          optionsFile.withWriter { props.store(it, null) }
       }
    }
-   return new File(serverRootDir)
+   return new File(project.ext.serverRootDir)
 }
 
 // Helper methods to get the directory in which to deploy webapps (add-ons).
@@ -131,7 +130,7 @@ build.doLast {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.0-milestone-3'
+    gradleVersion = '1.0-milestone-9'
     jarFile = file('wrapper/gradle-wrapper.jar')
     archiveBase = Wrapper.PathBase.GRADLE_USER_HOME
 }

@@ -1,6 +1,6 @@
 apply plugin: 'maven'
 
-version = "1.15"
+version = "1.16"
 group = "com.alcshare"
 
 repositories {
@@ -26,3 +26,10 @@ uploadArchives {
 artifacts {
    archives file('src/alclabs-gradle.gradle')
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.0-milestone-9'
+    jarFile = file('wrapper/gradle-wrapper.jar')
+    archiveBase = Wrapper.PathBase.GRADLE_USER_HOME
+}
+
