@@ -86,7 +86,9 @@ task showGui(description: 'Starts a graphical user interface for the build') << 
 // Helper method to get the installation root directory of the server.  This method will either
 // return whatever is in the 'serverRootDir' property (if it's set) ...
 File getServerDir() {
-   if (!project.ext.properties.containsKey("serverRootDir") || project.ext.serverRootDir == null) {
+   if (!project.ext.has("serverRootDir"))
+      project.ext.set("serverRootDir", null);
+   if (project.ext.serverRootDir == null) {
       Properties props = new Properties()
       File optionsFile = new File('build.options')
       if (optionsFile.exists()) {
@@ -94,14 +96,14 @@ File getServerDir() {
          project.ext.serverRootDir = props.getProperty('serverRootDir')
       }
 
-      if (serverRootDir == null) {
+      if (project.ext.serverRootDir == null) {
          File dir = pickServerDir()
          if (dir == null)
             throw new Exception("""serverRootDir property (path to webctrl install directory) not set.
 Please set the serverRootDir property on the command line (-PserverRootDir=<dir>) or in the userHome/.gradle/gradle.properties file.""")
 
          project.ext.serverRootDir = dir.absolutePath.replaceAll('\\\\', '/')
-         props.setProperty('serverRootDir', serverRootDir)
+         props.setProperty('serverRootDir', project.ext.serverRootDir)
          optionsFile.withWriter { props.store(it, null) }
       }
    }
