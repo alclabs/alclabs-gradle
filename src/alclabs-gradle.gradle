@@ -124,6 +124,7 @@ task deploy(description: 'Deploys the war to the webserver', type: Sync, depends
    }
    from zipTree(war.archivePath)
    into { getDeployLoc() }
+   fileMode = 0644
 }
 
 // have build tell you where the archive was put!
