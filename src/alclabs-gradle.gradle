@@ -109,6 +109,7 @@ Please set the serverRootDir property on the command line (-PserverRootDir=<dir>
    }
    return new File(project.ext.serverRootDir)
 }
+project.ext.set("getServerDir", {getServerDir()});
 
 // Helper methods to get the directory in which to deploy webapps (add-ons).
 File getDeployLoc() { new File(getServerDir(), 'webserver/webapps/'+war.baseName.toLowerCase()) }
