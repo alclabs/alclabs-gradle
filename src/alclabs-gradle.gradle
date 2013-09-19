@@ -192,12 +192,13 @@ File pickServerDir() {
   return serverDir
 }
 
-idea {
+def projRef = project
+rootProject.idea {
   project {
     //if you want to set specific jdk and language level
-    rootProject.afterEvaluate {
-       jdkName = "${rootProject.sourceCompatibility}"
-       languageLevel = "${rootProject.sourceCompatibility}"
+    projRef.afterEvaluate {
+       jdkName = "${projRef.sourceCompatibility}"
+       languageLevel = "${projRef.sourceCompatibility}"
     }
 
     ipr.withXml {
@@ -252,7 +253,9 @@ idea {
       }
     }
   }
+}
 
+idea {
   module {
     scopes.PROVIDED.plus += configurations.providedCompile
     scopes.PROVIDED.plus += configurations.providedRuntime
