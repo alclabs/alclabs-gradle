@@ -11,12 +11,18 @@ apply plugin: 'eclipse'
 repositories {
    mavenCentral()
 
-   // since JQuery is frequently used by add-ons, include their repo here as a convenience
-   mavenRepo (name: "JQuery", url: "http://code.jquery.com") {
-        pattern = "[module]-[revision](.[classifier]).[ext]"
+   // since JQuery & JQueryUI are frequently used by add-ons, include their repo here as a convenience
+   ivy {
+      url "http://code.jquery.com"
+      layout "pattern", {
+         artifact "[module]-[revision](.[classifier]).[ext]"
+      }
    }
-   mavenRepo (name: "JQuery UI", url: "http://code.jquery.com/ui") {
-        pattern = "[revision]/[module](.[classifier]).[ext]"
+   ivy {
+      url "http://code.jquery.com/ui"
+      layout "pattern", {
+         artifact "[revision]/[module](.[classifier]).[ext]"
+      }
    }
 }
 
@@ -297,7 +303,7 @@ idea {
 }
 
 buildscript {
-    repositories { mavenRepo url: 'http://download.java.net/maven/2/' }
+    repositories { maven { url 'http://download.java.net/maven/2/' } }
     dependencies { classpath group: 'com.jidesoft', name: 'jide-oss', version: '2.9.0' }
 }
 

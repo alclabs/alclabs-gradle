@@ -1,6 +1,6 @@
 apply plugin: 'maven'
 
-version = "1.19"
+version = "1.20"
 group = "com.alcshare"
 
 repositories {
