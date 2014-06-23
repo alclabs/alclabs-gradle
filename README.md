@@ -1,19 +1,19 @@
 ALClabs-gradle
 ==============
 
-This project contains the shared part of the [gradle](http://www.gradle.org) build file used for 
+This project contains the shared part of the [gradle](http://www.gradle.org) build file used for
 many of the ALClabs WebCTRL add-on web application projects.
 
 To use this, include the following in the header of your gradle build file.
-	configurations { gradleScript }
-	repositories { mavenRepo urls: 'http://repo.alcshare.com' }
-	dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.0.1' }
-	apply from: configurations.gradleScript.resolve().iterator().next()
+        configurations { gradleScript }
+        repositories { mavenRepo urls: 'http://repo.alcshare.com' }
+        dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.0.1' }
+        apply from: configurations.gradleScript.resolve().iterator().next()
 
 This shared gradle file includes:
 
 *   plugin war
-*   plugin groovy (which includes java)
+*   plugin groovy  (which includes java)
 *   plugin idea
 *   plugin eclipse
 *   sets up maven central as a repo
