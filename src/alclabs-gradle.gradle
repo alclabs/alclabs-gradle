@@ -263,10 +263,10 @@ rootProject.idea {
 
 idea {
   module {
-    scopes.PROVIDED.plus += configurations.providedCompile
-    scopes.PROVIDED.plus += configurations.providedRuntime
-    scopes.COMPILE.minus += configurations.providedCompile
-    scopes.RUNTIME.minus += configurations.providedRuntime
+    scopes.PROVIDED.plus += [configurations.providedCompile]
+    scopes.PROVIDED.plus += [configurations.providedRuntime]
+    scopes.COMPILE.minus += [configurations.providedCompile]
+    scopes.RUNTIME.minus += [configurations.providedRuntime]
 
     inheritOutputDirs = false
     outputDir = file("$buildDir/classes/main")
