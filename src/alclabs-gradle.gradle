@@ -242,20 +242,23 @@ rootProject.idea {
         {
           if (dep.scope == 'COMPILE' || dep.scope == 'RUNTIME')
             dep.classes.each {
-              libNode.appendNode('element', [id: 'file-copy', path: pathFactory.relativePath(userHome, '$USER_HOME$', it.file).relPath])
+              libNode.appendNode('element', [id: 'file-copy', path: pathFactory.resolvePath(userHome, '$USER_HOME$', it.file).relPath])
             }
         }
       }
-      def jsLibs = modules[0].project.configurations.js.resolve()
-      if (!jsLibs.isEmpty())
+      if (modules[0].project.configurations.findByName('js'))
       {
-        def jsNode =  mgrNode.artifact.root.element.find { it.'@name' == jsDir }
-        if (!jsNode)
-          jsNode =  mgrNode.artifact.root[0].appendNode('element', [id: 'directory', name: jsDir])
+         def jsLibs = modules[0].project.configurations.js.resolve()
+         if (!jsLibs.isEmpty())
+         {
+           def jsNode =  mgrNode.artifact.root.element.find { it.'@name' == jsDir }
+           if (!jsNode)
+             jsNode =  mgrNode.artifact.root[0].appendNode('element', [id: 'directory', name: jsDir])
 
-        jsLibs.each {
-          jsNode.appendNode('element', [id: 'file-copy', path: pathFactory.relativePath(userHome, '$USER_HOME$', it).relPath])
-        }
+           jsLibs.each {
+             jsNode.appendNode('element', [id: 'file-copy', path: pathFactory.resolvePath(userHome, '$USER_HOME$', it).relPath])
+           }
+         }
       }
     }
   }
