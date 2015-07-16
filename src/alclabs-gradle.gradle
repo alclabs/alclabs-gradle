@@ -306,7 +306,7 @@ idea {
 }
 
 buildscript {
-    repositories { maven { url 'http://download.java.net/maven/2/' } }
+    repositories { mavenCentral() }
     dependencies { classpath group: 'com.jidesoft', name: 'jide-oss', version: '2.9.0' }
 }
 
